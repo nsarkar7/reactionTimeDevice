@@ -4,6 +4,8 @@
 
 #define secs() (millis()/1000)
 
+NanoBLEFlashPrefs flash;
+
 float xAccel, yAccel, zAccel;
 
 enum stimulusType{
@@ -11,6 +13,8 @@ enum stimulusType{
   AUDITORY,
   VISUAL
 };
+
+const char* stimulusNames[] = {"HAPTIC", "AUDITORY", "VISUAL"};
 //time in seconds
 struct eventCommand{
   stimulusType type;
@@ -24,10 +28,19 @@ struct eventResult {
   int reactionTime;
 };
 
-std::vector<eventCommand> events = {{VISUAL, 5}, {HAPTIC, 12}, {VISUAL, 18}, {AUDITORY, 24}, {HAPTIC, 28}, {AUDITORY, 520}};
+struct FlashData {
+  int numberEvents;
+  eventResult results[50];
+};
+
+std::vector<eventCommand> events = {{HAPTIC, 3}};
 std::vector<eventResult> data = {};
+
 int eventIndex = -1;
-bool written = true;
+bool written = false;
+bool printed = false;
+
+FlashData readData;
 
 float getXAccel() {
   if (IMU.gyroscopeAvailable()) {
@@ -47,6 +60,20 @@ void setStimulus(stimulusType stimulus, int state){
     digitalWrite(LED_BUILTIN, state);
   }
 }
+void displayResults(eventResult results[], int numberEvents) {
+  Serial.println("Results:");
+  for (int i=0; i<numberEvents; i++) {
+    Serial.print("Trial #: ");
+    Serial.print(results[i].eventNumber);
+    Serial.print(", Type: ");
+    Serial.print(stimulusNames[results[i].type]);
+    Serial.print(", Event Time: ");
+    Serial.print(results[i].time);
+    Serial.print(" sec, Reaction Time: ");
+    Serial.print(results[i].reactionTime);
+    Serial.println(" msec");
+  }
+}
 
 void setup() {
   pinMode(D2, OUTPUT);
@@ -54,19 +81,52 @@ void setup() {
   pinMode(A1, OUTPUT);
   
   Serial.begin(9600);
-  while (!Serial);
+  delay(2000);
+  //while (!Serial);
 
   if (!IMU.begin()) {
     Serial.println("Failed to initialize IMU!");
-    while (1);
+    digitalWrite(D2, HIGH);
+    //while (1);
   }
-  Serial.println("----09809");
+  digitalWrite(D2, LOW);
 }
 
 void loop() {
   int index = -1;
-  if(events.size()>0){
+  if(Serial){
+    if(!printed){
+      Serial.println("--> r - Read Saved Data, c - Clear Saved data");
+      printed = true;
+    }
+    String cmd = Serial.readString();
+    cmd.trim();
+
+    if(cmd == "r"){
+      int rc = flash.readPrefs(&readData, sizeof(readData));
+      if(rc == 0){
+        Serial.println("Saved Data:");
+        displayResults(readData.results, readData.numberEvents);
+        Serial.println("--> Command Successfully Executed");
+      }
+      else{
+        Serial.println("--> No Saved Data Available");
+      }
+    }
+    else if(cmd == "c"){
+      Serial.println("--> Marking Data Invalid");
+      int rc = flash.deletePrefs();
+      Serial.println(flash.errorString(rc));
+      Serial.println("--> Running Garbage Collection");
+      int rc2 = flash.garbageCollection();
+      Serial.println(flash.errorString(rc2));
+      Serial.println("--> Clear Complete");
+    }
+
+  }
+  else if(events.size()>0){
     written = false;
+
     for (eventCommand event : events) {
       index++;
       
@@ -93,9 +153,51 @@ void loop() {
     }
   }
   else if(!written){
-    
+    FlashData storedData;
+
+    storedData.numberEvents = data.size();
+    for (int i=0; i<storedData.numberEvents; i++){
+      storedData.results[i] = data[i];
+    }
+    int rc = flash.writePrefs(&storedData, sizeof(storedData));
+
+    if(rc == 0){
+      //Success sequence
+      Serial.println("Successfully Flashed");
+      digitalWrite(A1, HIGH);
+      delay(200);
+      digitalWrite(A1, LOW);
+      digitalWrite(D2, HIGH);
+      delay(200);
+      digitalWrite(D2, LOW);
+      digitalWrite(A1, HIGH);
+      delay(200);
+      digitalWrite(A1, LOW);
+      digitalWrite(D2, HIGH);
+      delay(200);
+      digitalWrite(D2, LOW);
+      digitalWrite(A1, HIGH);
+      delay(1000);
+      digitalWrite(A1, LOW);
+    }
+    else{
+      //Cant write error sequence
+      Serial.println(rc);
+      digitalWrite(LED_BUILTIN, HIGH);
+      digitalWrite(A1, HIGH);
+      delay(200);
+      digitalWrite(A1, LOW);
+      delay(200);
+      digitalWrite(A1, HIGH);
+      delay(200);
+      digitalWrite(A1, LOW);
+      delay(200);
+      digitalWrite(A1, HIGH);
+      delay(200);
+      digitalWrite(A1, LOW);
+      digitalWrite(LED_BUILTIN, LOW);
+    }
+    written = true;
   }
-  //Serial.println(secs());
-  delay(1000);
-  //Serial.println(secs());
+  delay(100);
 }
