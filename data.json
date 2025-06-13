@@ -1,0 +1,22 @@
+{
+    "saved_trials": [
+        {
+            "utc_time": "2025-06-13 01:49:55 UTC",
+            "participant_age": "",
+            "results": [
+                {
+                    "eventNumber": 0,
+                    "stimulus": "VISUAL",
+                    "time": 5,
+                    "reactionTime": 411.2994580063969
+                },
+                {
+                    "eventNumber": 0,
+                    "stimulus": "VISUAL",
+                    "time": 8,
+                    "reactionTime": 305.14020899136085
+                }
+            ]
+        }
+    ]
+}

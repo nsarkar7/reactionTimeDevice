@@ -2,6 +2,7 @@ from tkinter import *
 import tkinter.messagebox
 from enum import Enum
 from dataclasses import dataclass
+from datetime import datetime, timezone
 import pygame
 import threading
 import time
@@ -34,7 +35,7 @@ class EventResult:
     reactionTime: int
 
 
-events = [EventCommand(StimulusType.VISUAL, 5), EventCommand(StimulusType.VISUAL, 8), EventCommand(StimulusType.VISUAL, 12)]
+events = [EventCommand(StimulusType.VISUAL, 5), EventCommand(StimulusType.VISUAL, 8)]
 data = []
 
 triggered = False
@@ -69,7 +70,13 @@ def triggerRelease(event):
     global triggered
     if event.keysym == 'space':
         triggered = False
-def saveData:
+
+def saveData(data):
+    with open('data.json','r+') as file:
+        savedData = json.load(file)
+        savedData["saved_trials"].append(data)
+        file.seek(0)
+        json.dump(savedData, file, indent=4)
 
 def loop():
     global triggered
@@ -99,7 +106,17 @@ def loop():
                     data.append(EventResult(index, event.stimulus, event.time, reactionTime*1000))
                     del events[index]
         else:
+            utc_time = datetime.now(timezone.utc)
+            serializableData = []
+            for result in data:
+                serializableData.append({
+                    "eventNumber": result.eventNumber,
+                    "stimulus": result.stimulus.name,
+                    "time": result.time,
+                    "reactionTime": result.reactionTime
+                    })
 
+            saveData({"utc_time": utc_time.strftime("%Y-%m-%d %H:%M:%S UTC"), "participant_age": "", "results": serializableData})
             break
         time.sleep(0.01)
 
