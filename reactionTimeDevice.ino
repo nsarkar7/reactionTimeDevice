@@ -33,7 +33,7 @@ struct FlashData {
   eventResult results[50];
 };
 
-std::vector<eventCommand> events = {{HAPTIC, 3}};
+std::vector<eventCommand> events = {{HAPTIC, 5}, {AUDITORY, 8}, {VISUAL, 15},{HAPTIC, 20},{HAPTIC, 25},{AUDITORY, 28}};
 std::vector<eventResult> data = {};
 
 int eventIndex = -1;
