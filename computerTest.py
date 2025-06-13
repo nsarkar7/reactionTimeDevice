@@ -57,10 +57,6 @@ def setStimulus(stimulus, state):
     elif stimulus == StimulusType.AUDITORY and state == 0:
         sound.stop()
 
-def Start():
-    global startTime
-    startTime = time.perf_counter()
-    tkinter.messagebox.showinfo("start")
 
 def triggerPress(event):
     global triggered
@@ -80,6 +76,7 @@ def saveData(data):
 
 def loop():
     global triggered
+    global startTime
 
     while True:
         #print(time.time()
@@ -100,7 +97,7 @@ def loop():
                             breakEvent = True
                             break
 
-                        time.sleep(0.01)
+                        time.sleep(0.0001)
 
                     setStimulus(event.stimulus, 0)
                     data.append(EventResult(index, event.stimulus, event.time, reactionTime*1000))
@@ -117,16 +114,30 @@ def loop():
                     })
 
             saveData({"utc_time": utc_time.strftime("%Y-%m-%d %H:%M:%S UTC"), "participant_age": "", "results": serializableData})
+            statusText = Label(root, text="TEST COMPLETE!", font=("Arial", 50))
+            statusText.pack(side=TOP)
             break
         time.sleep(0.01)
 
 asyncThread = threading.Thread(target=loop)
-asyncThread.start()
+
+def Start():
+    global startTime
+
+    startTime = time.perf_counter()
+    asyncThread.start()
+    statusText = Label(root, text="TEST STARTED", font=("Arial", 40))
+    statusText.pack(side=TOP)
 
 root.configure(bg="red")
 
+instructionsFirst = Label(root, text="Press the Start Test button to start the test", font=("Arial", 20))
+instructionsSecond = Label(root, text="Press the space key when you see GREEN or hear a BEEP", font=("Arial", 20))
+
 StartButton = Button(root, text="Start Test", command=Start, pady=10)
 
+instructionsFirst.pack(side=TOP)
+instructionsSecond.pack(side=TOP)
 StartButton.pack(side=BOTTOM)
 
 root.bind("<space>", triggerPress)
