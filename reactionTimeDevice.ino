@@ -33,7 +33,24 @@ struct FlashData {
   eventResult results[50];
 };
 
-std::vector<eventCommand> events = {{HAPTIC, 5}, {AUDITORY, 8}, {VISUAL, 15},{HAPTIC, 20},{HAPTIC, 25},{AUDITORY, 28}};
+//Visual Real Test
+std::vector<eventCommand> events = {{VISUAL, 44}, {VISUAL, 76}, {VISUAL, 118},{VISUAL, 150},{VISUAL, 187},{VISUAL, 222},{VISUAL, 264},{VISUAL, 296},{VISUAL, 330},{VISUAL, 366}};
+
+//Auditory Real Test
+//std::vector<eventCommand> events = {{AUDITORY, 31}, {AUDITORY, 75}, {AUDITORY, 108},{AUDITORY, 149},{AUDITORY, 188},{AUDITORY, 218},{AUDITORY, 248},{AUDITORY, 283},{AUDITORY, 319},{AUDITORY, 350}};
+
+//Haptic Real Test
+//std::vector<eventCommand> events = {{HAPTIC, 36}, {HAPTIC, 67}, {HAPTIC, 102},{HAPTIC, 137},{HAPTIC, 175},{HAPTIC, 213},{HAPTIC, 248},{HAPTIC, 293},{HAPTIC, 325},{HAPTIC, 365}};
+
+//Visual Prep Test
+//std::vector<eventCommand> events = {{VISUAL, 5}, {VISUAL, 10}};
+
+//Auditory Prep Test
+//std::vector<eventCommand> events = {{AUDITORY, 5}, {AUDITORY, 10}};
+
+//Haptic Prep Test
+//std::vector<eventCommand> events = {{HAPTIC, 5}, {HAPTIC, 10}};
+
 std::vector<eventResult> data = {};
 
 int eventIndex = -1;
