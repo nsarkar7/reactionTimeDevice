@@ -143,7 +143,7 @@ void loop() {
               setStimulus(event.type, 0);
               break;            
           }
-          delay(10);
+          //delay(10);
         }
         setStimulus(event.type, 0);
 

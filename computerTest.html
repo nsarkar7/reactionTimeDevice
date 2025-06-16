@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reaction Time Test - Compiter</title>
+  <style>
+    body {
+      background-color: red;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      margin-top: 100px;
+    }
+    #message {
+      font-size: 32px;
+    }
+    #startBtn {
+      padding: 20px 40px;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="message">Press the Start Test button to start the test <br> Press the space key when you see GREEN or hear a BEEP</div>
+<br>
+<button id="startBtn">Start Test</button>
+
+<script>
+
+const StimulusType = Object.freeze({
+  VISUAL: 0,
+  AUDITORY: 1
+});
+
+const stimulusNames = ["VISUAL", "AUDITORY"];
+
+class EventComand {
+  constructor(stimulus, time){
+    this.stimulus = stimulus;
+    this.time = time;
+  }
+}
+
+class EventResult {
+  constructor(eventNumber, stimulus, time, reactionTime) {
+    this.eventNumber = eventNumber;
+    this.stimulus = stimulus;
+    this.time = time;
+    this.reactionTime = reactionTime;
+  }
+}
+
+const events = [new EventComand(StimulusType.VISUAL, 5), new EventComand(StimulusType.VISUAL, 8)];
+const data = [];
+
+const beep = new Audio("beep.wav");
+
+let startTime = null;
+let stimulusTime = null;
+let keyDown = false;
+
+document.getElementById("startBtn").addEventListener("click", () => {
+  startTime = performance.now();
+  document.getElementById("message").textContent = "Test Started";
+  document.getElementById("startBtn").disabled = true;
+  loop();
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.code == "Space"){
+    keyDown = true;
+  }
+});
+
+document.addEventListener("keyup", (event) => {
+  if (event.code == "Space" ){
+    keyDown = false;
+  }
+});
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function setStimulus(stimulus, state) {
+  if(stimulus == StimulusType.VISUAL){
+
+    document.body.style.backgroundColor = state ? "green" : "red";
+  }
+  else if(stimulus == StimulusType.AUDITORY){
+    if(state){
+      beep.loop = true;
+      beep.play();
+    }
+    else{
+      beep.pause();
+      beep.currentTime = 0;
+    }
+  }
+}
+async function awaitResponse(eventStartTime, stimulus) {
+  while(performance.now()-eventStartTime<2000){
+    if(keyDown){
+      const reactionTime = performance.now()-eventStartTime;
+      setStimulus(stimulus, 0);
+      keyDown = false;
+      return reactionTime;
+    }
+    await sleep(1);
+  }
+  setStimulus(stimulus, 0);
+  return -1;
+}
+
+
+async function loop(){
+  for(let i=0; i<events.length;i++){
+    const event = events[i];
+    const wait = startTime + event.time*1000-performance.now();
+    if (wait > 0) await sleep (wait);
+
+    const eventStartTime = performance.now()
+    setStimulus(event.stimulus, 1);
+    const reactionTime = await awaitResponse(eventStartTime, event.stimulus);
+    data.push(new EventResult(i, event.stimulus, event.time, reactionTime));
+  }
+
+  let output  = "Results:\n"
+  data.forEach((event,index) => {
+    output += `Trial #: ${index+1}, Type: ${stimulusNames[event.stimulus]}, Even Time: ${event.time} sec, Reaction Time: ${event.reactionTime} ms\n`
+  });
+  console.log(output);
+  document.getElementById("message").textContent = "Test Complete\nThank You";
+}
+
+</script>
+
+</body>
+</html>

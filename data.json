@@ -143,6 +143,114 @@
                     "reactionTime": 299.59904099814594
                 }
             ]
+        },
+        {
+            "utc_time": "2025-06-13 03:11:47 UTC",
+            "participant_age": "",
+            "results": [
+                {
+                    "eventNumber": 0,
+                    "stimulus": "VISUAL",
+                    "time": 5,
+                    "reactionTime": 387.0551669970155
+                },
+                {
+                    "eventNumber": 0,
+                    "stimulus": "VISUAL",
+                    "time": 8,
+                    "reactionTime": 287.6290829881327
+                }
+            ]
+        },
+        {
+            "utc_time": "2025-06-13 03:26:18 UTC",
+            "participant_age": "",
+            "results": [
+                {
+                    "eventNumber": 0,
+                    "stimulus": "VISUAL",
+                    "time": 5,
+                    "reactionTime": 439.82858399976976
+                },
+                {
+                    "eventNumber": 0,
+                    "stimulus": "VISUAL",
+                    "time": 8,
+                    "reactionTime": 237.3456250061281
+                }
+            ]
+        },
+        {
+            "utc_time": "2025-06-13 03:26:54 UTC",
+            "participant_age": "",
+            "results": [
+                {
+                    "eventNumber": 0,
+                    "stimulus": "VISUAL",
+                    "time": 5,
+                    "reactionTime": 454.64887500565965
+                },
+                {
+                    "eventNumber": 0,
+                    "stimulus": "VISUAL",
+                    "time": 8,
+                    "reactionTime": 502.62870801088866
+                }
+            ]
+        },
+        {
+            "utc_time": "2025-06-13 03:29:12 UTC",
+            "participant_age": "",
+            "results": [
+                {
+                    "eventNumber": 0,
+                    "stimulus": "VISUAL",
+                    "time": 5,
+                    "reactionTime": 304.512541013537
+                },
+                {
+                    "eventNumber": 1,
+                    "stimulus": "VISUAL",
+                    "time": 8,
+                    "reactionTime": 33.34308300691191
+                }
+            ]
+        },
+        {
+            "utc_time": "2025-06-13 03:29:44 UTC",
+            "participant_age": "",
+            "results": [
+                {
+                    "eventNumber": 0,
+                    "stimulus": "VISUAL",
+                    "time": 5,
+                    "reactionTime": 352.9556669964222
+                },
+                {
+                    "eventNumber": 1,
+                    "stimulus": "VISUAL",
+                    "time": 8,
+                    "reactionTime": 315.9684999991441
+                }
+            ]
+        },
+        {
+            "utc_time": "2025-06-13 03:30:12 UTC",
+            "participant_age": "",
+            "results": [
+                {
+                    "eventNumber": 0,
+                    "stimulus": "VISUAL",
+                    "time": 5,
+                    "reactionTime": 327.0070839935215
+                },
+                {
+                    "eventNumber": 1,
+                    "stimulus": "VISUAL",
+                    "time": 8,
+                    "reactionTime": 374.67295899114106
+                }
+            ]
         }
     ]
 }
